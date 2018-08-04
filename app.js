@@ -25,7 +25,7 @@ var server = http.createServer((req, res) => {
     })
 
     if (path.pathname !== '/') { //first time the page is displayed htere wont be a uswername...
-     var p = new Promise((resolve) => {
+      var p = new Promise((resolve) => {
         //console.log(path)
         info.userNameMatch = path.href.match(/username=([^&]+)/)[1]
         info.repoMatch = path.href.match(/repo=([a-zA-Z_]+)/)[1]
@@ -34,17 +34,17 @@ var server = http.createServer((req, res) => {
         }
         console.log(info)
         resolve(info)
-   }).then((info) => {
-         console.log(info)
-         var results = github_request.getCommits(info)
-         //console.log(results)
-         return results
-       }).then((results) => {
-         //console.log("these are the results" + results)
-         //console.log(results)
-         var htmlOut = data.replace("{{ commitFeed }}", results)
-         res.end(htmlOut)
-       })
+      }).then((info) => {
+        console.log(info)
+        var results = github_request.getCommits(info)
+        //console.log(results)
+        return results
+      }).then((results) => {
+        //console.log("these are the results" + results)
+        //console.log(results)
+        var htmlOut = data.replace("{{ commitFeed }}", results)
+        res.end(htmlOut)
+      })
 
     } //matches line 17 didnt have ) boefre
     else {
