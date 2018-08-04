@@ -41,8 +41,9 @@ var server = http.createServer((req, res) => {
         return results
       }).then((results) => {
         //console.log("these are the results" + results)
-        //console.log(results)
-        var htmlOut = data.replace("{{ commitFeed }}", results)
+        //c;lkjonsole.log(results)
+        var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(results,null, 2))
+
         res.end(htmlOut)
       })
 

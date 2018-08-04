@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Tye's GitHub Commit Feed!</title>
 
-  </head>
-  <body>
-    <form action='/commits' method='get' >
+<head>
+  <title>Tye's GitHub Commit Feed!</title>
+
+</head>
+
+<body>
+  <fieldset>
+    <legend>Enter the username and repo name here</legend>
+    <form action='/commits' method='get'>
       <div>
         <label for='username'>Username:</label>
         <input type='text' id='username' name="username">
@@ -16,15 +20,15 @@
       </div>
       <input type='submit'>
     </form>
-
-<pre>
+  </fieldset>
+  <pre>
 {{ commitFeed }}
 </pre>
 
 
 
 
-  </body>
+</body>
 
 
 
