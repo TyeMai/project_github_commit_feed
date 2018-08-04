@@ -1,36 +1,57 @@
-const http = require('http')
 const fs = require('fs')
 const url = require('url')
+const http = require('http')
 var commits = require('./data/commits')
-//const index = require('./public/index.html')
+commits = JSON.stringify(commits, null, 2)
+const secretToken = require('./secretToken')
+const github_request = require('./octokit_requester.js')
 
-var port = 3000;
+var port = 6002;
 var host = 'localhost';
 
-commits = JSON.stringify(commits, null, 2)
 
+var server = http.createServer((req, res) => {
+  let info = {}
+  var path = url.parse(req.url)
 
-var server = http.createServer((req,res) => {
-  var path = url.parse(req.url)//.pathname wierd.. pathname = commit
-
-  fs.readFile('./public/index.html', 'utf8', (err,data) =>{
-    if(err){
+  fs.readFile('./public/index.html', 'utf8', (err, data) => {
+    if (err) {
       res.writeHead(404);
       res.end("404 that bitch no found")
-    } else {
-      res.writeHead(200, {"Content-Type": "text/html"
-    });
-      var toReplace = /commitFeed/
-      data = data.replace(toReplace, commits)
+      return
+    }
+    res.writeHead(200, {
+      "Content-Type": "text/html"
+    })
+
+    if (path.pathname !== '/') { //first time the page is displayed htere wont be a uswername...
+     var p = new Promise((resolve) => {
+        //console.log(path)
+        info.userNameMatch = path.href.match(/username=([^&]+)/)[1]
+        info.repoMatch = path.href.match(/repo=([a-zA-Z_]+)/)[1]
+        if (info.userNameMatch === null) {
+          return
+        }
+        console.log(info)
+        resolve(info)
+   }).then((info) => {
+         console.log(info)
+         var results = github_request.getCommits(info)
+         //console.log(results)
+         return results
+       }).then((results) => {
+         //console.log("these are the results" + results)
+         //console.log(results)
+         var htmlOut = data.replace("{{ commitFeed }}", results)
+         res.end(htmlOut)
+       })
+
+    } //matches line 17 didnt have ) boefre
+    else {
       res.end(data)
-      var userName = path.href.match(/username=([^&]+)/)
-      var repo = path.href.match(/repo=([a-zA-Z]+)/)
-      //console.log(userName[1])
-      //console.log(repo[1])
     }
   })
-});
-
+})
 server.listen(port, host, () => {
-  console.log("im listing" + host + port)
+  console.log("im listening" + host + port)
 })
