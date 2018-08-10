@@ -18,8 +18,6 @@ loadPages.index = (req, res) => {
       res.writeHead(200, {
         "Content-Type": "text/html"
       });
-      //var toReplace = /commitFeed/
-      //data = data.replace(toReplace, commits)
       res.end(data)
     }
   })
@@ -40,8 +38,9 @@ loadPages.form = (req, res) => {
     var p = new Promise((resolve) => {
       console.log(path.href)
       info.userNameMatch = path.href.match(/username=([^&]+)/)[1]
-      info.repoMatch = path.href.match(/repo=([a-zA-Z_]+)/)[1]
-
+      info.repoMatch = path.href.match(/repo=([a-zA-Z_-]+)/)[1]
+      //console.log(info.userNameMatch)
+      //console.log(info.repoMatch)
       //info.userNameMatch = path.match(/username=([^&]+)/)[1]
       //info.repoMatch = path.match(/repo=([a-zA-Z_]+)/)[1]
       if (info.userNameMatch === null) {
@@ -50,15 +49,37 @@ loadPages.form = (req, res) => {
       //console.log(info)
       resolve(info)
     }).then((info) => {
-      //console.log(info)
       var results = github_request.getCommits(info)
       //console.log(results)
       return results
     }).then((results) => {
       //console.log("these are the results" + results)
       //c;lkjonsole.log(results)
-      var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(results, null, 2))
+      /*
+      console.log('im the results')
+      console.log(results.data[0].commit.author)
+      console.log(results.data[0].commit.message)
+      console.log(results.data[0].commit.url)
+      console.log(results.data[0].sha)
+*/
+      var commits = []
+      var someFuckingName = {}
+      for(var commit of results.data){
 
+        commits.push(someFuckingName = {
+          author: commit.commit.author ,
+          message: commit.commit.message ,
+          sha:   commit.sha ,
+          url: commit.commit.url
+        })
+
+      //  console.log(commit.sha)
+      //  console.log(commit.commit.author)
+      //  console.log(commit.commit.message)
+      //  console.log(commit.commit.url)
+      }
+
+      var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(commits, null, 2))//JSON.stringify(results, null, 2))
       res.end(htmlOut)
     })
   })
