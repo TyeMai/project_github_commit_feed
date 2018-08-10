@@ -1,17 +1,22 @@
-{
-"Foobar": {
-  "foobar": [
-    {
-      "message": "Update README.md",
-      "author": {
-        "name": "Foobar",
-        "email": "foobar@email.com",
-        "date": "2017-02-16T19:25:15Z"
-      },
-      "url": "https://github.com/Foobar/foobar/commit/20ad02f81024c7dc9bff6da3d8e996725203923e",
-      "sha": "20ad02f81024c7dc9bff6da3d8e996725203923e",
-      "sheshe": "i display dinamically!!!"
-    }
-  ]
-}
-}
+[
+  {
+    "author": {
+      "name": "Rick G",
+      "email": "lacunainc04@gmail.com",
+      "date": "2018-03-28T21:42:12Z"
+    },
+    "message": "Refactor lifecycle method to reduce dynamic loading and event handing.\nForm inputs do not utilize the on change events",
+    "sha": "d714c154e184744bceb998dc6e7c583e3432e2e7",
+    "url": "https://api.github.com/repos/rxsharp/birthday-app/git/commits/d714c154e184744bceb998dc6e7c583e3432e2e7"
+  },
+  {
+    "author": {
+      "name": "Rick G",
+      "email": "lacunainc04@gmail.com",
+      "date": "2018-03-26T07:54:19Z"
+    },
+    "message": "Initial commit with user input features",
+    "sha": "afeb80b113cf3373ef32c6c430c8cccdbae4e274",
+    "url": "https://api.github.com/repos/rxsharp/birthday-app/git/commits/afeb80b113cf3373ef32c6c430c8cccdbae4e274"
+  }
+]
