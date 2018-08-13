@@ -100,7 +100,7 @@ loadPages.webHooks = (req, res) => {
       return gitResults
     }).then((gitResults) => {
       //var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(commits, null, 2))
-      var htmlOut = data.replace("{{ commitFeed }}", results)
+      var htmlOut = data.replace("{{ commitFeed }}", gitResults)
       console.log(gitResults)
       res.end(htmlOut)
       //res.end('200 ok')
