@@ -14,12 +14,14 @@ Router.routes = {}
 
 
 //forOf loops have strange behavior in this case.
-Router.methods.forEach(method => {
+//Router.methods.forEach(method => {
+for (let method of Router.methods){
   Router.routes[method] = Router.routes[method] || {}
   Router[method] = (path, callback) => {
     Router.routes[method][path] = callback;
   }
-})
+
+}//)
 
 
 Router.handle = (req, res) => {

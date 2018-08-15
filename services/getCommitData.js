@@ -1,12 +1,9 @@
 const fs = require('fs')
 var commits = require('../data/commits')
-//commits = JSON.stringify(commits, null, 2)
 const url = require('url')
 const secretToken = require('../secretToken')
 const github_request = require('../octokit_requester.js')
 const parser = require('./parser')
-
-
 const loadPages = {}
 
 loadPages.index = (req, res) => {
@@ -24,9 +21,7 @@ loadPages.index = (req, res) => {
   })
 }
 
-//this is the function to get and display info if the form is used.
 loadPages.form = (req, res) => {
-  let formInfo = {}
   var path = url.parse(req.url)
   fs.readFile('./public/index.html', 'utf8', (err, data) => {
     if (err) {
@@ -37,34 +32,33 @@ loadPages.form = (req, res) => {
     res.writeHead(200, {
       "Content-Type": "text/html"
     })
-    var p = new Promise((resolve) => {
-      formInfo.userNameMatch = path.href.match(/username=([^&]+)/)[1]
-      formInfo.repoMatch = path.href.match(/repo=([a-zA-Z_-]+)/)[1]
-      if (formInfo.userNameMatch === null) {
-        return
-      }
-      resolve(formInfo)
-    }).then((formInfo) => {
-      let gitResults = github_request.getCommits(formInfo)
-      return gitResults
-    }).then((gitResults) => {
-      var scrubCommits = []
-      var someFuckingName = {}
-      for (var commit of gitResults.data) {
-        scrubCommits.push(someFuckingName = {
-          author: commit.commit.author,
-          message: commit.commit.message,
-          sha: commit.sha,
-          url: commit.commit.url
-        })
-        //scrubCommits = JSON.stringify(scrubCommits, null, 2)
-        //fs.appendFileSync('./data/commits.json', JSON.stringify(someFuckingName, null,2))
-      }
-      scrubCommits = JSON.stringify(scrubCommits, null, 2)
-      //var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(scrubCommits, null, 2))
-      var htmlOut = data.replace("{{ commitFeed }}", scrubCommits)
-      res.end(htmlOut)
-    })
+    let userNameMatch = path.href.match(/username=([^&]+)/)[1]
+    let repoMatch = path.href.match(/repo=([a-zA-Z_-]+)/)[1]
+    if (userNameMatch === null || repoMatch === null) {
+      return
+    }
+    let formInfo = {}
+    formInfo.userNameMatch = path.href.match(/username=([^&]+)/)[1]
+    formInfo.repoMatch = path.href.match(/repo=([a-zA-Z_-]+)/)[1]
+    github_request.getCommits(formInfo)
+      .then((gitResults) => {
+        var scrubCommits = []
+
+        let scrubCommit;
+        for (var commit of gitResults.data) {
+          scrubCommit = {
+            author: commit.commit.author,
+            message: commit.commit.message,
+            sha: commit.sha,
+            url: commit.commit.url
+          }
+          scrubCommits.push(scrubCommit)
+        }
+        scrubCommits = JSON.stringify(scrubCommits, null, 2)
+        //var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(scrubCommits, null, 2))
+        var htmlOut = data.replace("{{ commitFeed }}", scrubCommits)
+        res.end(htmlOut)
+      })
   })
 }
 
@@ -96,14 +90,10 @@ loadPages.webHooks = (req, res) => {
       return gitResults
     }).then((gitResults) => {
       gitResults = JSON.stringify(gitResults, null, 2)
-      fs.writeFileSync("./data/commits.json",gitResults, 'utf8')
+      fs.writeFileSync("./data/commits.json", gitResults, 'utf8')
       return gitResults
     }).then((gitResults) => {
-      //var htmlOut = data.replace("{{ commitFeed }}", JSON.stringify(commits, null, 2))
       var htmlOut = data.replace("{{ commitFeed }}", gitResults)
-      console.log(gitResults)
-      res.end(htmlOut)
-      //res.end('200 ok')
     }).then((htmlOut) => {
       res.end(htmlOut)
     })

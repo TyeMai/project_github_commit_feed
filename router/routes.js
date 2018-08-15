@@ -20,6 +20,6 @@ router.post('/github/webhooks', (req, res) => {
 })
 
 
-
+//console.log(router.routes)
 
 module.exports = router.routes
